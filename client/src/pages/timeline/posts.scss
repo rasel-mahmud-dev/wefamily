@@ -1,0 +1,23 @@
+.post-content{
+  white-space: break-spaces;
+}
+
+.reaction_emoji{
+ 
+  li {
+    width: 11px;
+    &:nth-child(2) { left: 10px}
+    &:nth-child(3) { left: 20px}
+    &:nth-child(4) { left: 30px}
+    &:nth-child(5) { left: 40px}
+    img{
+      width: 18px;
+      display: flex;
+    }
+  }
+  .number_count{
+    font-weight: 500;
+    width: 30px;
+    text-align: end;
+  }
+}

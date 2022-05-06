@@ -1,0 +1,2 @@
+[31merror[39m: Nov-05-2021 17:26:15: 	Duplicate entry 'raju@gmail.com' for key 'users.email_UNIQUE' : 
+ undefined

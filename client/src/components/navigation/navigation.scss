@@ -1,0 +1,51 @@
+
+.badge{
+  @apply bg-green-400
+    text-white
+    absolute
+    -top-2 px-1 lg:px-2 text-xs ;
+}
+
+.navigation{
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 80px;
+  padding: 0 15px;
+  background: #fff;
+  .main-nav{
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    .nav-item{
+      padding: 10px;
+      a{
+        color: #414141;
+      }
+    }
+  }
+}
+.input{
+
+}
+
+
+.nav_items{
+  .nav_item{
+    @apply px-2 lg:px-4
+  }
+  .avatar_logo{
+    padding: 0 !important;
+  }
+  i{
+    //top: 10px;
+    font-size: 18px;
+    color: #444444;
+  }
+}
+
+.auth_nav{
+
+}
+.h-48{height: 48px}

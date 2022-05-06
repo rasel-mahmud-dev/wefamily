@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "strict": false,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "src",
+    // include src dir
+    "sourceRoot": ".",
+    "inlineSourceMap": true,
+    //    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "ts-node-dev": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
+}
+
+// "engines": {
+//   "node": "16.12.0"
+// },

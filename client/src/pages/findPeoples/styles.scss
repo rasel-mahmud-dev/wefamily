@@ -1,0 +1,12 @@
+@import "src/scss/--mixin";
+
+.request_friend{
+  
+  .list-item{
+    @include get_down(576px){
+      flex: 1;
+      margin-bottom: 10px;
+    }
+  }
+  
+}

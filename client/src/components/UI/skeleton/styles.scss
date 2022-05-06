@@ -1,0 +1,36 @@
+.skeleton_group{
+  display: block;
+  width: 100%;
+  background-image: linear-gradient(0.25turn, transparent, rgba(255, 255, 255, 0.83), transparent);
+    //linear-gradient(#eee, #eee),
+    //radial-gradient(38px circle at 19px 19px, #eee 50%, transparent 51%),
+  //linear-gradient(#eee, #eee);
+  background-repeat: no-repeat;
+  background-size: 350px 750px, 0px 10px, 10px 10px, 25px 30px;
+  background-position: -300px 0, 0 0, 50px, 50px 195px;
+  position: relative;
+  animation: loading 1s infinite linear;
+}
+@keyframes loading {
+  to {
+    background-position: 100vw
+  }
+}
+
+.line {
+  width: 100%;
+  height: 2px;
+  display: block;
+  background: #ececec;
+  position: relative;
+  z-index: -55;
+}
+
+.circle{
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background: #ececec;
+  position: relative;
+  z-index: -55;
+}

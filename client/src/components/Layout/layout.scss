@@ -1,0 +1,50 @@
+@import "src/scss/--breakpoint";
+:root{
+  --header-height: 48px
+}
+
+.sticky{
+  flex-basis: 400px;
+  position: sticky;
+  top: 56px; // 48 + 8
+  //top:  calc(40px + var(--header-height));
+  bottom: 0;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 4px;
+  //padding: 8px;
+  box-sizing: border-box;
+}
+.sidebar_content{
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: calc(100vh - (var(--header-height) + 5px));
+  min-width: 300px;
+}
+
+.main-content{
+  width: 100%;
+}
+
+.left-sidebar{
+    @include get_down(1050px) {
+      display: none;
+    }
+  
+  .sidebar_content {
+    @include get_down(1200px){
+      min-width: 200px;
+    }
+  }
+}
+.right-sidebar{
+  @include get_down(1050px) {
+    .sidebar_content {
+      min-width: 150px !important;
+    }
+  }
+  @include down_sm(){
+    display: none;
+  }
+}
+

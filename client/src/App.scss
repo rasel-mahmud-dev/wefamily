@@ -1,0 +1,118 @@
+@import "src/scss/--mixin";
+
+li,ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+h1,h2,h3,h4,h5,h6{margin: 0;padding: 0}
+
+.active_friend_list {
+  position: fixed;
+  top: 67px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+.sidebar_fixed{
+  min-height: calc(100vh - 105px ) ;
+}
+
+.card{
+  @apply mt-2 mb-5 bg-white rounded py-3
+}
+
+.input-item{
+  @apply
+  box-border
+  bg-opacity-0 border border-primary  px-2 py-1 rounded w-full border-opacity-50
+}
+.container{
+  @apply max-w-screen-xl mx-auto px-3 md:px-4;
+}
+
+.btn{
+  @apply bg-primary text-white px-2 py-1 rounded  border-0
+}
+.btn-sm{
+  border-radius: 3px;
+  @apply px-2 py-0.5 rounded text-sm
+}
+.btn-a{
+  background: transparent;
+  @apply text-primary text-sm font-medium hover:underline;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+*{
+  border-style: solid;
+  border-width: 0;
+}
+
+.min-w-100px{
+  min-width: 100px;
+}
+
+.flex-0{flex: 0}
+.flex-1{flex: 1}
+.flex-2{flex: 2;}
+.flex-3{flex: 3;}
+.flex-4{flex: 4;}
+.flex-5{flex: 5;}
+.flex-6{flex: 6;}
+
+.sm\:flex-0{@include get_down(576px){flex: 0;}}
+.sm\:flex-1{@include get_down(576px){flex: 1;}}
+.sm\:flex-2{@include get_down(576px){flex: 2;}}
+.sm\:flex-3{@include get_down(576px){flex: 3;}}
+.sm\:flex-4{@include get_down(576px){flex: 4;}}
+.sm\:flex-5{@include get_down(576px){flex: 5;}}
+.sm\:flex-6{@include get_down(576px){flex: 6;}}
+.sm\:flex-7{@include get_down(576px){flex: 7;}}
+.sm\:flex-8{@include get_down(576px){flex: 8;}}
+
+.md\:flex-0{@include get_down(768px){flex: 0;}}
+.md\:flex-1{@include get_down(768px){flex: 1;}}
+.md\:flex-2{@include get_down(768px){flex: 2;}}
+.md\:flex-3{@include get_down(768px){flex: 3;}}
+.md\:flex-4{@include get_down(768px){flex: 4;}}
+.md\:flex-5{@include get_down(768px){flex: 5;}}
+.md\:flex-6{@include get_down(768px){flex: 6;}}
+.md\:flex-7{@include get_down(768px){flex: 7;}}
+.md\:flex-8{@include get_down(768px){flex: 8;}}
+
+.lg\:flex-0{@include get_down(1192px){flex: 0;}}
+.lg\:flex-1{@include get_down(1192px){flex: 1;}}
+.lg\:flex-2{@include get_down(1192px){flex: 2;}}
+.lg\:flex-3{@include get_down(1192px){flex: 3;}}
+.lg\:flex-4{@include get_down(1192px){flex: 4;}}
+.lg\:flex-5{@include get_down(1192px){flex: 5;}}
+.lg\:flex-6{@include get_down(1192px){flex: 6;}}
+.lg\:flex-7{@include get_down(1192px){flex: 7;}}
+.lg\:flex-8{@include get_down(1192px){flex: 8;}}
+
+.radius-100{border-radius: 100%}
+
+
+.radius-100\%{
+  border-radius: 100%;
+}
+.px-0-f{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.container-1366{
+  max-width: 1366px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+body{
+  background: #f4f6f8;
+  width: 100%;
+  height: 100vh;
+}
+
+.shadow-xss{
+  box-shadow: 0 8px 30px rgba(0,0,0,.05);
+}
