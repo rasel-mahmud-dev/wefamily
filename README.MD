@@ -15,7 +15,7 @@ Datebook is Realtime Social Dating website, user can share their posts, user can
 
 # This Application under development
 
-Live Link https://datebook.vercel.app/
+Live Link https://datebook.netlify.app/
 
 ### Preview screenshot
 
