@@ -8,7 +8,8 @@ export default function usersRoute(app){
   app.get("/api/peoples", isAuth, controllers.userController.getPeoples)
   // app.post("/api/users", controllers.userController.createNewUser)
   app.post("/api/registration", controllers.userController.createNewUser)
-  app.get("/api/user/profile/:username", controllers.userController.fetchProfile)
+  
+  app.post("/api/user/profile", controllers.userController.fetchProfile)
   
   app.post("/api/user/add-friend", isAuth, controllers.userController.addFriend)
   app.delete("/api/user/unfriend/:friend_id", isAuth, controllers.userController.unFriend)
@@ -29,7 +30,10 @@ export default function usersRoute(app){
   
   // send a friend Request...
   app.post("/api/add-friend-request", isAuth, controllers.friendRequestController.addFriendRequest)
-  app.get("/api/get-requested-friends", isAuth, controllers.friendRequestController.getRequestedFriends)
+  
+  app.post("/api/user/send-friend-request", isAuth, controllers.friendRequestController.sendFriendRequest)
+  
+  app.get("/api/get-coming-requested-friends", isAuth, controllers.friendRequestController.getComingRequestedFriends)
   
   // get all current auth friends
   app.get("/api/all-friends", isAuth, controllers.userController.getAllFriends)

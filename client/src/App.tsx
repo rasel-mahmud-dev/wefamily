@@ -26,7 +26,8 @@ function App(props) {
     let loader = document.querySelector(".loader")
     loader && loader.parentElement && loader.parentElement.removeChild(loader)
   
-    dispatch(fetchCurrentAuth())
+    // dispatch(fetchCurrentAuth())
+    
   }, [])
   
   React.useEffect(()=>{
@@ -177,6 +178,5 @@ function App(props) {
     </div>
   )
 }
-
 
 export default App

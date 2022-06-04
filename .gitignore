@@ -1,6 +1,5 @@
 
 .idea
-
 api/.idea
 api/.gita
 api/node_modules
@@ -21,3 +20,4 @@ client/.vscode
 client/.netlify
 client/deploy.sh
 client/src/asserts/fontawesome-pro-5.12.0-web
+client/fortawesome

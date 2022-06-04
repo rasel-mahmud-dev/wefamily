@@ -26,11 +26,10 @@ export const fetchCurrentAuth= (_) => async (dispatch)=> {
   })
 }
 
-export const fetchUserProfile = async (username, callback)=>{
-  api.get(`/api/user/profile/${username}`).then(response=>{
+export const fetchUserProfile = async (authId, callback)=>{
+  api.post(`/api/user/profile`, {_id: authId }).then(response=>{
     if(response.status === 200) {
       callback(response.data.profile)
     }
   })
-  
 }

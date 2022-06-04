@@ -8,16 +8,17 @@ import {useDispatch, useSelector} from "react-redux";
 
 import "./layout.scss"
 import {RootStateType} from "src/store";
+import {AuthReducerType} from "store/types/AuthReducerType";
 
 const HomeLayout = () => {
   
   return (
-   <div className="container">
+   <div className="container-1300">
 
      <div className="flex">
   
        <div className="left-sidebar sticky mr-4">
-         <div className="sidebar_content shadow-xss ">
+         <div className="sidebar_content shadow-xss px-4 pt-4 ">
            
            <div className="">
              <TopTrending />
@@ -38,29 +39,13 @@ const HomeLayout = () => {
          </div>
        </div>
        
-       {/*<div className="hidden lg:block min-w-300">*/}
-       {/*  <div className="card fixed min-w-300">*/}
-       {/*    <TopTrending />*/}
-       {/*  </div>*/}
-       {/*</div>*/}
-       
-       {/*<div className="mx-4">*/}
-       {/*  <Posts />*/}
-       {/*</div>*/}
-       
-       {/*<div className="min-w-200 hidden lg:block">*/}
-       {/*  <div className="sidebar_fixed card fixed min-w-200">*/}
-       {/*    <ActiveFriends />*/}
-       {/*  </div>*/}
-       {/*</div>*/}
-       
      </div>
    </div>
   );
 };
 
 function TopTrending() {
-  let authState =useSelector((state: RootStateType)=>state.authState)
+  let authState: AuthReducerType = useSelector((state: RootStateType)=>state.authState)
   
   const nav = [
     { label: authState.username, icon: "", img: authState.avatar, to: `/profile/${authState.username}`},
@@ -129,9 +114,9 @@ function ActiveFriends(props){
   }
   
   return (
-    <div className="">
+    <div className="px-4 pt-4">
         <div className="flex justify-between items-center">
-          <h4>Active Friends</h4>
+          <h4 onClick={()=>alert("sdfsdf")} >Active Friends</h4>
           <i onClick={hideMeHandler} className="text-gray-600 cursor-pointer text-xs fa fa-power-off" />
         </div>
         <ul className="mt-4">

@@ -4,6 +4,7 @@ import fullLink from "src/utils/fullLink";
 import Badge from "../UI/badge/Badge";
 import  React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
+import slugify from "src/utils/slugify";
 // import PreloadLink from "../preloadLink/PreloadLink";
 
 
@@ -32,13 +33,13 @@ const Navigation = (props) => {
   
   function authDropdown(isShow) {
     return isShow && (
-      <div className="absolute top-7 right-0 shadow-lg card bg-white">
+      <div className="absolute top-10 right-0 shadow-lg card bg-white">
         <div className="min-w-200px  text-sm font-medium">
           { authState._id ? (
             <>
               <li
                 className="hover:bg-primary hover:text-white cursor-pointer px-2 ">
-                <NavLink to={`profile/${authState.username}`}>Profile</NavLink>
+                <NavLink to={`profile/${slugify(authState.username)}/${authState._id}`}>Profile</NavLink>
               </li>
               <li onClick={()=> logoutRoutePush("/user/profile") } className="hover:bg-primary hover:text-white cursor-pointer px-2 py-1">Logout</li>
             </>
@@ -60,18 +61,37 @@ const Navigation = (props) => {
   
   return (
     <>
-      <div className="navigation bg-white z-50 fixed w-full shadow-xss">
+      <div className="navigation bg-primary z-50 fixed w-full shadow-xss">
         
-        <div className="max-w-screen-xl mx-auto px-2">
+        <div className="max-w-screen-xl w-full mx-auto px-2">
           <ul className="main-nav flex justify-between items-center">
           <div className="nav-logo flex md:flex-1">
-            <div className="hidden flex-1 md:flex max-w-xl justify-between items-center input bg-dark-100 bg-opacity-25 text-white px-3.5 rounded-2xl text-sm">
+            <div
+              className="hidden
+              flex-1 md:flex max-w-xl
+               justify-between
+                items-center
+                 input
+                 bg-white
+                 bg-opacity-20
+                  text-white
+                   px-3.5
+                  rounded-2xl
+                   text-sm">
               <input
-                className="py-2 placeholder:text-dark-400 px-1 text-dark-400 bg-transparent bg-opacity-0 border-none outline-none w-full"
+                className="py-2
+                placeholder:text-light-900
+                px-1
+                text-light-850
+                 bg-transparent
+                 bg-opacity-0
+                  border-none
+                 outline-none
+                  w-full"
                 type="text"
                 placeholder="Search Users, posts"
               />
-              <i className="fa fa-search text-dark-300  ml-1.5" />
+              <i className="fa fa-search text-light-850  ml-1.5" />
             </div>
             
           </div>
@@ -80,26 +100,34 @@ const Navigation = (props) => {
               <li className="nav_item ">
                 <Link to="/">
                   <i className="fa fa-home-alt" />
+                  <label htmlFor="">Home</label>
+                  
                 </Link>
               </li>
               <li className="nav_item relative">
                 <Link to="/find-friends">
                   <i className="fa fa-user" />
+                  <label htmlFor="">Friends</label>
                 </Link>
                 <Badge className="badge" count={100} />
               </li>
-              <li className="nav_item relative">
-                <Link to="/find-friends">
-                  <i className="fa fa-bell" />
-                </Link>
-                <Badge className="badge " count={30} />
-              </li>
+              
+              {/*<li className="nav_item relative">*/}
+              {/*  <Link to="/find-friends">*/}
+              {/*    <i className="fa fa-bell" />*/}
+              {/*    <label htmlFor="">Home</label>*/}
+              {/*  </Link>*/}
+              {/*  <Badge className="badge " count={30} />*/}
+              {/*</li>*/}
+              
               <li className="nav_item relative">
                 <Link to="/chat">
                   <i className="fa fa-comment-dots" />
+                  <label htmlFor="">Chat</label>
                 </Link>
                 <Badge className="badge"  count={2} />
               </li>
+              
               <li className="nav_item relative">
                 <i className="fa fa-globe-americas" />
                 {/*<Badge className="bg-green-400 text-white absolute px-1 -top-2.5 right-1" count={12} />*/}

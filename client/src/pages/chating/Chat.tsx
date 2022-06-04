@@ -67,7 +67,7 @@ const Chat = () => {
   
   
   return (
-    <div className="container-1366 px-3 bg-white">
+    <div className="container-1300 px-3 bg-white">
       <div className="flex justify-between items-center">
         <h4 className="text-2xl font-bold text-gray-900 mt-4 mb-2">Messages</h4>
         {/*<button onClick={()=>authState.in_visible ? hideMeHandler(false) : hideMeHandler(true)} > {authState.in_visible ? "hidden" : " Visible "}  Me*/}

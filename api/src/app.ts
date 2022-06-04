@@ -18,7 +18,6 @@ import dbConnect from "./database";
 import saveLog from "./logger/saveLog";
 
 
-
 // let c = ['debug', 'log', 'warn', 'error']
 // c.forEach((methodName) => {
 //   const originalLoggingMethod = console[methodName];

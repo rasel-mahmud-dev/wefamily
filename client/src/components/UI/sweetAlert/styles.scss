@@ -1,0 +1,31 @@
+.alert{
+  position: fixed;
+  top: 0;
+  z-index: 1005;
+  padding: 15px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  left: 50%;
+  transform: translate(-50%, -18vh);
+  width: 90%;
+  box-sizing: border-box;
+  max-width: 700px;
+  transition: all .5s ease;
+  .icon{
+    width: 15px!important;
+  }
+}
+.sweet-alert{
+  background: #d95a87;
+  color: white;
+  box-shadow: 1px 6px 20px 2px #ff000080;
+  border-radius: 5px;
+}
+.alert-show{ transform : translate(-50%, 25vh) !important  }
+.alert-hide{ transform :  translate(-50%, -18vh) !important }
+.loader_root{
+  margin-top: 20%;
+  display: flex;
+  justify-content: center;
+}

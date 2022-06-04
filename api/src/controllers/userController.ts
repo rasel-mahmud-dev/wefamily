@@ -146,9 +146,9 @@ export const loginViaToken = async (req: Request, res: Response)=>{
 }
 
 export const fetchProfile = async (req: Request, res: Response)=>{
-  let {username} = req.params
+  let { _id  } = req.body
   try{
-    let user: any = await User.findOne({username})
+    let user: any = await User.findOne({_id: new ObjectId(_id)})
     if(user){
       let {password, ...other} = user
       res.json({profile: other})

@@ -11,9 +11,9 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  height: 80px;
+  height: 55px;
   padding: 0 15px;
-  background: #fff;
+  background: #ff7c7c;
   .main-nav{
     min-height: 48px;
     display: flex;
@@ -21,7 +21,8 @@
     .nav-item{
       padding: 10px;
       a{
-        color: #414141;
+        @apply text-light-900;
+        //color: ;
       }
     }
   }
@@ -33,7 +34,7 @@
 
 .nav_items{
   .nav_item{
-    @apply px-2 lg:px-4
+    @apply px-2 lg:px-4 py-4
   }
   .avatar_logo{
     padding: 0 !important;
@@ -41,7 +42,8 @@
   i{
     //top: 10px;
     font-size: 18px;
-    color: #444444;
+    //color: #444444;
+    @apply text-light-850;
   }
 }
 

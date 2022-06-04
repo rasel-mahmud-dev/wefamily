@@ -2,15 +2,15 @@ import {ActionTypes} from "store/types/ActionTypes";
 
 
 const initialState = {
-  "friends": [],
-  "allPeoples": [],   // that are add friend able...
+  friends: [],
+  allPeoples: [],   // that are add friend able...
   primateMessage: {},  // {[roomKey]: []}
   socket: null
 }
 
 
 
-export default function (state=initialState, action){
+export default function (state=initialState, action: any){
   let updatedState = {...state}
   let index = -1
   let updatedStateFriends;

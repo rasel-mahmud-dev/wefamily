@@ -26,7 +26,8 @@ const Profile = (props) => {
   let dispatch = useDispatch()
   
   React.useEffect(()=> {
-    fetchUserProfile(params.username, function (profile){
+    fetchUserProfile(params.authId, function (profile){
+      console.log(profile)
       setProfile(profile)
     })
   }, [params.username])
@@ -97,7 +98,8 @@ const Profile = (props) => {
               <img src={fullLink(profile.avatar)} alt=""/>
             </div>
           </div>
-          <div className="container-1366">
+          
+          <div className="container-1300">
             <div className="mt-28 mx-auto block text-center">
               <h4>{profile.first_name}</h4>
               <h4>{profile.last_name}</h4>

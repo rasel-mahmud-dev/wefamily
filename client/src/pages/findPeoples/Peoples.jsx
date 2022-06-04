@@ -39,7 +39,7 @@ const Peoples = (props) => {
       }
     })
     
-    api.get("/api/get-requested-friends").then(response=>{
+    api.get("/api/get-coming-requested-friends").then(response=>{
       if(response.status === 200) {
         if(response.data) {
           setAllRequest(response.data)
@@ -72,6 +72,17 @@ const Peoples = (props) => {
     {label: "Find Peoples"},
     {label: "Send Request"}
   ]
+  
+  function acceptFriendRequest(requestFriendId){
+    console.log(requestFriendId)
+  }
+  
+  function sendFriendRequest(friendId){
+    api.post("/api/user/send-friend-request", { friend_id: friendId }).then(response=>{
+      console.log(response)
+    })
+    // console.log(friendId)
+  }
   
   function renderAllFriends(users){
     return <ul className="flex-wrap request_friend flex flex-col md:flex-row  mt-4">
@@ -118,7 +129,7 @@ const Peoples = (props) => {
                 </div>
                 <div className="flex flex-1 md:flex-0 md:block justify-between">
                    <h4 className="text-sm ml-2">{user.username}</h4>
-                   <button className="btn" onClick={(e)=>addFriendHandler(user._id)} >Add</button>
+                   <button className="btn" onClick={()=>sendFriendRequest(user._id)} >Add Friend</button>
                 </div>
                 </div>
               </li>
@@ -131,7 +142,7 @@ const Peoples = (props) => {
   )}
   
   
-  function renderSendFriendRequest(friends){
+  function renderComingFriendRequest(friends){
     return (
       <div className="request_friend">
         <h1 className="text-md font-medium">Your Requested Friend</h1>
@@ -140,15 +151,15 @@ const Peoples = (props) => {
             <li className="list-item">
               <div className="flex flex-row md:flex-col">
                 <div className="w-[50px] mx-auto">
-                  { user.to.avatar ? (
-                    <img className="rounded-full w-full " src={fullLink(user.to.avatar)} alt=""/>
+                  { user.from.avatar ? (
+                    <img className="rounded-full w-full " src={fullLink(user.from.avatar)} alt=""/>
                   ) : (
                     <i className="fa text-4xl fa-user-circle" />
                   ) }
                 </div>
                 <div className="flex flex-1 md:flex-0 md:block justify-between">
-                  <h4 className="text-sm ml-2">{user.to.username}</h4>
-                  <button className="btn" onClick={(e)=>cancelFriendRequest(user._id)} >Cancel</button>
+                  <h4 className="text-sm ml-2">{user.from.username}</h4>
+                  <button className="btn" onClick={(e)=>acceptFriendRequest(user.from._id)} >Accept Request</button>
                 </div>
               </div>
             </li>
@@ -163,7 +174,7 @@ const Peoples = (props) => {
   
   
   return (
-    <div className="container ">
+    <div className="container-1300 ">
       
       <div className="shadow-xss bg-white px-4 py-3">
         <div className="mt-2">
@@ -186,7 +197,7 @@ const Peoples = (props) => {
           </div>
         ) : tab === "Find Peoples" ? (
           renderAllPeopleWithoutFriends(users)
-        ) : renderSendFriendRequest(allRequest)  }
+        ) : renderComingFriendRequest(allRequest)  }
         
       </div>
     </div>

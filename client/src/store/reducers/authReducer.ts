@@ -1,8 +1,10 @@
 
 import {ActionTypes} from "store/types/ActionTypes";
+import {AuthReducerAction, AuthReducerType} from "store/types/AuthReducerType";
 
 
-const initialState = {
+const initialState: AuthReducerType = {
+  _id: "",
   username: "",
   email: "",
   first_name: "",
@@ -11,7 +13,7 @@ const initialState = {
 }
 
 
-export default function (state=initialState, action){
+export default function (state= initialState, action: AuthReducerAction){
   let updatedState = {...state}
   switch (action.type){
     case ActionTypes.LOGIN:

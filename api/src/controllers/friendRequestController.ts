@@ -60,24 +60,28 @@ export const removeFriendRequest = async (req: Request, res: Response)=>{
   } catch (ex){
     errorConsole(ex)
   }
-  
 }
 
+export const sendFriendRequest = async (req: Request, res: Response)=> {
+  // /api/user/send-friend-request"
+}
 
-export const getRequestedFriends = async (req: Request, res: Response)=>{
+export const getComingRequestedFriends = async (req: Request, res: Response)=>{
   let _id = req.user_id
   
   try {
+
     let a = await FriendRequest.aggregate([
-      { $match: { from: new ObjectId(_id) }},
+      { $match: { to: new ObjectId(_id) }},
       { $lookup: {
         from: "users",
-        localField: "to",
+        localField: "from",
         foreignField: "_id",
-        as: "to"
+        as: "from"
       }},
-      { $unwind: { path: "$to", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$from", preserveNullAndEmptyArrays: true } },
     ])
+ 
     res.send(a)
   
   } catch (ex){

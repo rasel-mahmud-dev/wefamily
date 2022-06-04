@@ -342,7 +342,7 @@ const PostList = (props) => {
     }
     
     return (
-      <div className="mt-2 mb-5 bg-white rounded py-3 ">
+      <div className="mt-2 mb-5 bg-white rounded py-3  px-4">
         <h4 className="text-md font-medium mb-1">What is in your mind</h4>
         <div className="add-comment-form">
           <textarea

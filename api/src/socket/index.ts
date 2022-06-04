@@ -27,7 +27,8 @@ export function socketInitiate(httpServer, app) {
 	
 	const io = new Server(httpServer, {
 		cors: {
-			origin: process.env.NODE_ENV === "development" ? "http://192.168.43.170:2000" :  process.env.FRONT_END,
+			origin: process.env.NODE_ENV === "development" ? "http://localhost:2000" :  process.env.FRONT_END,
+			// origin: process.env.NODE_ENV === "development" ? "http://192.168.43.170:2000" :  process.env.FRONT_END,
 			methods: ["GET", "POST"]
 		}
 	});
