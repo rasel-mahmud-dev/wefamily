@@ -3,17 +3,10 @@ import React, {FC} from 'react';
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {
-  faAngleDown,
-  faBars, faEye, faEyeSlash, faFlagUsa,
-  faSearch,
-  faShoppingBag,
-  faShoppingCart,
-  faUserCircle
+ faEye, faEyeSlash
+
 } from "@fortawesome/pro-regular-svg-icons";
-import {faHeart, faSignOutAlt, faUserAlt} from "@fortawesome/free-solid-svg-icons";
-import {faSignIn} from "@fortawesome/pro-brands-svg-icons";
-import {faTimesCircle} from "@fortawesome/pro-solid-svg-icons";
-import {faAdn, faFacebookF,} from "@fortawesome/free-brands-svg-icons";
+
 
 import "./styles.scss"
 

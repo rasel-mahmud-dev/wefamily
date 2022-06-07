@@ -1,5 +1,5 @@
 import Base from"./Base";
-import Joi from "joi";
+
 
 class Like extends Base{
   

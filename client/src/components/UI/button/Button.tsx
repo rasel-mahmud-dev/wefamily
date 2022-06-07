@@ -4,13 +4,12 @@ import {symlink} from "fs";
 
 
 type Props = {
-  type?: any
+  type: any
   className: string,
-  children: React.ReactNode
 }
 
-const Button: FC<Props> = ({className, type="button", children}) => {
-  return <button type={type} className={"btn " + className}>{children}</button>
+const Button: FC<React.ButtonHTMLAttributes<Props>> = ({className, type="button", children, ...attr}) => {
+  return <button  type={type} className={"btn " + className} {...attr} >{children}</button>
 };
 
 export default Button;

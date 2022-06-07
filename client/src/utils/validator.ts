@@ -1,6 +1,14 @@
 
+
+
+interface Value {
+  [key: string]: {
+    value: string
+  }
+}
+
 // @ts-ignore
-export function validate(name?: string, value: string | number | object, schema: object, earlyAbort: boolean = true){
+export function validate(name?: string, value: Value, schema: object, earlyAbort: boolean = true){
   let result: any = {}
   
   if(earlyAbort) {
@@ -21,19 +29,26 @@ export function validate(name?: string, value: string | number | object, schema:
     }
   } else {
   
-    for (let schemaKey in schema) {
-      let schemas = schema[schemaKey]
-      for (let schemasKey in schemas) {
-        let fn = schemas[schemasKey]
-
-        if (fn) {
-          let errorMsg = fn([schemaKey], value[schemaKey])
-          if (errorMsg) {
-            result[schemaKey] = errorMsg[schemaKey]
-          } else {
-            // delete all object that is already valid..
-            delete result[schemaKey]
-          }
+    /**
+      value like this...
+      birthDay: {value: '', touch: false, errorMessage: ''}
+      email: {value: '', touch: false, errorMessage: ''}
+      firstName: {value: '', touch: false, errorMessage: ''}
+      gender: {value: '', touch: false, errorMessage: ''}
+      lastName: {value: '', touch: false, errorMessage: ''
+    */
+  
+    for (let valueKey in value) {
+      const eachSchema = schema[valueKey]
+      for (let eachSchemaKey in eachSchema) {
+        let schemaFn = eachSchema[eachSchemaKey]
+        let errorMsg = schemaFn(valueKey, value[valueKey].value)
+        if (errorMsg) {
+          result[valueKey] = errorMsg[valueKey]
+          break // don't execute  other validation function fn
+        } else {
+          // delete all object that is already valid..
+          delete result[valueKey]
         }
       }
     }
@@ -46,6 +61,16 @@ export function required(){
   return function (name: string, value: string | number){
     if(!value){
       return {[name]: name + " is required" }
+    } else {
+      return null
+    }
+  }
+}
+
+export function tuple(include: any[]){
+  return function (name: string, value: string | number){
+    if(include.indexOf(value) === -1){
+      return {[name]: name + " value "+ value+  " is unknown" }
     } else {
       return null
     }

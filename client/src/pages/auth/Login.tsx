@@ -6,6 +6,9 @@ import Button from "UI/button/Button";
 
 import {email, max, min, required, text, validate} from "src/utils/validator";
 import SweetAlert from "UI/sweetAlert/SweetAlert";
+import apis from "src/apis";
+import {ActionTypes} from "store/types/ActionTypes";
+import {LoginAction} from "store/types/AuthReducerType";
 
 
 type Props = {
@@ -30,8 +33,8 @@ const Login:FC<Props> = (props) => {
   
   
   const [userData, setUserData] = React.useState({
-    email: { value:"", touch: false, errorMessage: "" },
-    password: { value:"", touch: false, errorMessage: "" },
+    email: { value:"rasel@gmail.com", touch: false, errorMessage: "" },
+    password: { value:"123", touch: false, errorMessage: "" },
   })
   
   const schema = {
@@ -42,7 +45,6 @@ const Login:FC<Props> = (props) => {
       required: required(),
     },
     password: {
-      text: text(),
       max: max(30),
       min: min(3),
       required: required(),
@@ -63,38 +65,19 @@ const Login:FC<Props> = (props) => {
     }
     setUserData(a)
   }
-  
-  
-  // function errorMessageHandler(data, e, abortEarly: boolean){
-  //   const { error, value } = schema.validate(data, {abortEarly: abortEarly});
-  //   // let formErrorMessage: any = {...formErrors}
-  //   //
-  //   // formErrorMessage[e.target.name].touch = true
-  //   //
-  //   // if(error && error?.details) {
-  //   //   for (let i = 0; i < error.details.length; i++) {
-  //   //     let ea = error.details[i]
-  //   //     formErrorMessage[ea.path[0]].message = ea.message
-  //   //   }
-  //   // }
-  //   // return formErrorMessage
-  // }
-  
+
   
   function handleSubmit(e){
     e.preventDefault()
-  
-    setErrorMessage("")
     
-    // setFormErrors({
-    //   ...errorMessageHandler(userData,false)
-    // })
+    errorMessage && setErrorMessage("")
     
     let complete = true;
     for (const userDataKey in userData) {
       complete = !!(userData[userDataKey].touch && userData[userDataKey].value);
     }
-  
+    
+    
     let errors = validate("", {
       email: userData.email,
       password: userData.password
@@ -112,31 +95,27 @@ const Login:FC<Props> = (props) => {
           touch: true
         }
       }
-      setUserData(result)
+     return  setUserData(result)
     }
     
-    if(complete){
-    //   api.post("/api/login", {
-    //     email: userData.email,
-    //     password: userData.password,
-    //   }).then(response=>{
-    //     if(response.status === 200) {
-    //       dispatch<LoginAction>({
-    //         type: ActionTypes.LOGIN,
-    //         payload: {
-    //           ...response.data,
-    //           authFetched: true,
-    //         }
-    //       })
-    //       navigate(afterRedirect ? afterRedirect : "/")
-    //     }
-    //   })
-    } else {
-      setErrorMessage("sdfdsfsdfdsf")
-    }
+    apis.post("/api/login", {
+      email: userData.email.value,
+      password: userData.password.value,
+    }).then(response=>{
+      if(response.status === 200) {
+        dispatch<LoginAction>({
+          type: ActionTypes.LOGIN,
+          payload: {
+            ...response.data,
+            authFetched: true,
+          }
+        })
+        navigate(afterRedirect ? afterRedirect : "/")
+      }
+    })
+    
     
   }
-  
   
   
   return (
@@ -153,19 +132,9 @@ const Login:FC<Props> = (props) => {
           
           
           <form onSubmit={handleSubmit} className="py-6">
-            
-            <p className="mb-5 text-center">{errorMessage}</p>
-            
-            {/*<Input*/}
-            {/*  onChange={handleChange}*/}
-            {/*  value={userData.phone}*/}
-            {/*  name="phone"*/}
-            {/*  type="number"*/}
-            {/*  label="Phone"*/}
-            {/*  errorMessage={formErrors.phone}*/}
-            {/*/>*/}
   
-  
+            <p className="input--error_message open__error_message text-center bg-red-400/20"> {errorMessage && errorMessage}</p>
+            
             <Input
               onChange={handleChange}
               value={userData.email.value}

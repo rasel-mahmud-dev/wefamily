@@ -1,7 +1,7 @@
 
 
 import Base from"./Base";
-import Joi from "joi";
+
 
 
 export interface PostType {

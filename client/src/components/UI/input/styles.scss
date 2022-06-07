@@ -22,17 +22,32 @@
         font-size: 16px;
       }
     }
-    
-    .input--error_message{
-      font-size: 14px;
-      color: #ff5555;
-    }
-    .open__error_message{
-      background: rgba(255, 189, 189, 0.29);
-    }
-    .close__error_message{
-      display: none;
-    }
   }
   
+  &.type-radio{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 0px;
+    label{
+      min-width: auto;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    input[type="radio"]{
+      display: none !important;
+    }
+  }
 }
+
+.input--error_message{
+  font-size: 14px;
+  color: #ff5555;
+}
+.open__error_message{
+  //background: rgba(255, 189, 189, 0.29);
+}
+.close__error_message{
+  display: none;
+}
+

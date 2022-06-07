@@ -9,6 +9,7 @@ import dbConnect from "../database";
 
 import { Request, Response }  from "express"
 import saveLog from "../logger/saveLog";
+import sendMail from "../utilities/sendMail";
 
 /**
   query params need pass => for [ "add_friend_able" ]
@@ -50,9 +51,10 @@ export const getPeoples = async (req: Request, res: Response)=>{
 }
 
 export const createNewUser = async (req, res, next)=>{
+  
   try {
-    let date = new Date()
-    let {first_name, last_name, email, password } = req.body
+    let {first_name, last_name, email, password, birthday, gender } = req.body
+    let dateOfbirth = new Date(birthday)
     let user: any = await User.findOne({email})
     
     if(user) {
@@ -68,8 +70,78 @@ export const createNewUser = async (req, res, next)=>{
       email,
       password: hashedPass,
       avatar: "",
-      username: first_name + " " + last_name
+      username: first_name + " " + last_name,
+      email_verification: true,
+      birthday: dateOfbirth,
+      gender
     })
+    
+    
+    // const expiredTime = '30min'
+    // let token = createToken(user._id, user.email, expiredTime)
+    
+    
+    // send mail to verify gmail
+//     let info = await sendMail({
+//       to: email,
+//       from: process.env.ADMIN_EMAIL,
+//       subject: "Account verification need",
+//       html: `
+//         <!DOCTYPE html>
+// <html>
+// <head>
+//   <meta charset="utf-8"/>
+//   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//
+//
+//           <style type="text/css">
+//               .bg{
+//                 font-family: Roboto,serif;
+//                 box-sizing: border-box;
+//                 width: 100%;
+//                 height: max-content;
+//                 background-image: linear-gradient(0deg, rgba(255, 70, 117, 0.92), rgba(255, 58, 241, 0.69));
+//               }
+//               .panel{
+//                 background: rgba(255, 255, 255, 0.73);
+//               }
+//
+//             </style>
+//       </head>
+//       <body>
+//
+//             <div class="bg" style="padding: 50px">
+//               <h1 style="text-align: center; color: white; margin: 0px 0; margin-bottom: 10px; font-weight: 600">Account Varification</h1>
+//               <div style="background: rgba(230,230,230,0.439); padding: 60px; max-width: 60%; margin: auto; border-radius: 4px ">
+//                 <h2 style="text-align: start; color: white; margin: 20px 0; font-weight: 500">Hey ${first_name}</h2>
+//                 <p style="text-align: start; color: white; margin: 0px 0; font-weight: 400">Someone (hopefully you) ! has requested to change your old password.
+//                   Please click the link below to change your password now</p>
+//                   <button style="width: max-content; padding:5px 10px; color: white; outline: none; border:none; background: rgba(255,255,255,0.36); border-radius: 4px; margin-top: 40px ">
+//                   <a href="${process.env.NODE_ENV === "development" ? "http://localhost:2000" : "https://datebook.netlify.app/" }/#/auth/registration/verify/${token}">Veriyf</a>
+//                   </button>
+//
+//                 <p style="text-align: start; color: white; margin: 20px 0; font-weight: 500">Please note that your password will not change unless you click the link above and
+//                   create a new one.</p>
+//                 <p style="text-align: start; color: white; margin: 20px 0; font-weight: 500">This link will expire in 30 minutes. If your link has expired, you can always</p>
+//
+//                 <div>
+//                   <p>Sincerely,</p>
+//                   <h4>Rasel Mahmud</h4>
+//                 </div>
+//
+//               </div>
+//             </div>
+//           </body>
+// </html>`
+//     })
+    // if(info.messageId){
+    //   response(res, 201, {message: "Email has been send"})
+    // } else {
+    //   response(res, 500, "internal error")
+    // }
+    
+    
     user = await user.save()
     if(user){
       let token = await createToken(user._id, user.email)
@@ -80,6 +152,8 @@ export const createNewUser = async (req, res, next)=>{
     }
 
   } catch (ex){
+    console.log(ex)
+    // errorConsole(ex)
     saveLog(ex?.message, req.url, req.method)
     
     if(ex.type === "VALIDATION_ERROR"){
@@ -87,10 +161,73 @@ export const createNewUser = async (req, res, next)=>{
     } else if(ex.type === "ER_DUP_ENTRY"){
       response(res, 409, "user already exists")
     } else {
-      // next(ex)
+      next(ex)
     }
   }
 }
+
+
+
+export const checkPasswordResetSessionTimeout = async (req, res)=> {
+  let { token } = req.body
+  
+  try {
+    let s = await parseToken(token)
+    // console.log(s)
+    response(res, 200, "")
+  } catch (ex){
+    errorConsole(ex)
+    if(ex.message === "jwt expired"){
+      response(res, 500, "password reset session expired")
+    }
+  }
+}
+
+export const changePassword = async (req, res)=>{
+  let client;
+  try{
+    const { token, password }  = req.body
+    
+    // send a link and a secret code with expire date....
+    // 1st check token validity.
+    // 2. if token valid then reset password
+    
+    let { email, id } =  await parseToken(token)
+    let user: any = await User.findOne({email: email}, {})
+    
+    if(user){
+      let {hash, err} = await createHash(password)
+      if(!hash){
+        errorConsole(err)
+        response(res, 500, "Password reset fail. Try again")
+      }
+      let isUpdated = await User.update(
+        {email: email},
+        {$set: {password: hash}}
+      )
+      if(isUpdated) {
+        let {password, ...other} = user
+        response(res, 201, {token: token, ...other})
+      } else {
+        response(res, 500, "Password reset fail. Try again")
+      }
+      
+    } else {
+      response(res, 500, "Account not found")
+    }
+    
+    
+  } catch (ex){
+    errorConsole(ex)
+    response(res, 500, ex.message ? ex.message : "Internal Error")
+    
+  } finally {
+    client?.quit()
+  }
+}
+
+
+
 
 export const loginUser = async (req: Request, res: Response)=>{
   try {
@@ -289,8 +426,6 @@ export const getFriend = async (req: Request, res: Response)=>{
 }
 
 
-
-
 export const getAllFriends = async (req: Request, res: Response)=>{
   
   let _id = req.user_id
@@ -313,7 +448,6 @@ export const getAllFriends = async (req: Request, res: Response)=>{
   
   }
 }
-
 
 
 export const getFriends = async (req: Request, res: Response)=>{

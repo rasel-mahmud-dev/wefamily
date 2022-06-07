@@ -1,13 +1,15 @@
 
 import Base from"./Base";
-import Joi from "joi";
 
 interface a{
   name: string
 }
 
 
-
+enum Gender{
+  "male"="male",
+  "female"="female",
+}
 
 class User extends Base{
   
@@ -21,15 +23,32 @@ class User extends Base{
   password: string;
   created_at: Date;
   updated_at: Date;
+  birthday: Date
+  gender: Gender
   avatar: string;
+  email_verification: boolean
   
-  constructor({ _id = "", first_name, last_name, username, email, password, avatar }) {
+  constructor({
+    _id = "",
+    first_name,
+    last_name,
+    username,
+    email,
+    password,
+    avatar,
+    email_verification,
+    birthday,
+    gender
+  }) {
     super("users")
-    this._id = _id,
-      this.first_name = first_name
+    this.email_verification = email_verification
+    this._id = _id
+    this.first_name = first_name
     this.last_name = last_name
     this.username = username
     this.email = email
+    this.birthday = birthday
+    this.gender = gender
     this.password = password
     this.created_at = new Date()
     this.updated_at = new Date()
