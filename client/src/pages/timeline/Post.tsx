@@ -1,45 +1,48 @@
 import {useDispatch} from "react-redux";
 import React, {FC} from "react";
-import api from "src/apis";
+import apis, {api} from "src/apis";
 import fullLink from "src/utils/fullLink";
 import {Link} from "react-router-dom";
 import AddComment from "components/comments/AddComment";
 
 import PostReaction from "pages/timeline/PostReaction";
+import {PostType, ReactionType} from "store/types";
 
 
 
-interface PostType{
-  post: {
-    _id: string,
-    title: string,
+interface PostDetail extends PostType{
     author: {avatar: string, username: string},
-    created_at: string,
-    description: string
-    total_comments: number
-    likes: any[]
-  },
+}
+
+
+interface PostPropsType extends PostType{
+  post: PostDetail,
   authId: string,
   renderComments: (_id: string, comments: any[], total_comments: number)=>any
 }
 
 
-function Post (props: PostType) {
-let lastLikeReaction = ""
+function Post (props: PostPropsType) {
+  let lastLikeReaction = ""
   const dispatch = useDispatch()
-  let {post, authId,  renderComments} = props
+
+  let { post, authId,  renderComments} = props
   
   let [postDetail, setPostDetail] = React.useState<{
     _id?: string
     description?: string
     comments?: any[]
-    
-  }>({})
+  }>({
+    _id: "",
+    description: "",
+    comments: null
+  })
+
   const [showAddCommentForm, setShowAddCommentForm] = React.useState(false)
   
   function addCommentHandler(newComment) {
     let val = newComment.text.trim()
-    api.post("api/add-comment", {
+    api().post("api/add-comment", {
       parent_id: null,
       text: val,
       post_id: post._id,
@@ -48,12 +51,29 @@ let lastLikeReaction = ""
     
     })
   }
-  
-  function toggleLikeHandler(post_id, reaction){
+
+
+  type ToggleLikeResponseType = {
+    like?: {
+      createdAt: string,
+      post_id: string,
+      reaction: string,
+      updatedAt: string,
+      user_id: string,
+      user: {
+        avatar: string,
+        username: string
+      },
+      _id: string,
+    },
+    removeLike: boolean
+  }
+
+  function toggleReactionHandler(post_id: string, reaction: ReactionType){
     if(authId){
-      api.post("/api/toggle-like", {post_id: post_id, reaction: reaction, user_id: authId}).then(r => {
+      api().post<ToggleLikeResponseType>("/api/toggle-like", {post_id: post_id, reaction: reaction, user_id: authId}).then(r => {
         if(r.status === 201){
-          let { like, updateLike, removeLike } = r.data
+          let { like,  removeLike } = r.data
           if(like){
             lastLikeReaction = reaction
             dispatch({
@@ -61,7 +81,8 @@ let lastLikeReaction = ""
               payload: {
                 user_id: authId,
                 post_id: post_id,
-                reaction: reaction
+                reaction: reaction,
+                user: like.user
               }
             })
             
@@ -74,38 +95,40 @@ let lastLikeReaction = ""
               }
             })
             
-          } else if(updateLike) {
-            lastLikeReaction = updateLike.reaction
-            dispatch({
-              type: "UPDATE_LIKE",
-              payload: {
-                user_id: authId,
-                post_id: post_id,
-                reaction: updateLike.reaction
-              }
-            })
           }
+          // else if(updateLike) {
+          //   lastLikeReaction = updateLike.reaction
+          //   dispatch({
+          //     type: "UPDATE_LIKE",
+          //     payload: {
+          //       user_id: authId,
+          //       post_id: post_id,
+          //       reaction: updateLike.reaction
+          //     }
+          //   })
+          // }
         }
       })
     }
   }
   
   function onFetchPostDetail(post_id) {
+    console.log(post_id)
     if(postDetail && postDetail._id){
       setPostDetail({})
     } else {
-      api.get(`/api/posts/${post_id}`).then(response => {
+      api().get(`/api/posts/${post_id}`).then(response => {
         if (response.status === 200) {
-          // setPostDetail(response.data.post)
-          fetchMoreCommentHandler(response.data.post._id, response.data.post)
+          setPostDetail(response.data.post)
+          // fetchMoreCommentHandler(response.data.post._id)
         }
       })
     }
   }
   
-  function fetchMoreCommentHandler(postId, postDetail) {
+  function fetchMoreCommentHandler(postId) {
     let {pageSize, currentPage} = { pageSize: 10, currentPage: 1 }
-    api.get(`api/comments?post_id=${postId}&page_size=${pageSize}&current_page=${currentPage + 1}`).then(response=>{
+    api().get(`api/comments?post_id=${postId}&page_size=${pageSize}&current_page=${currentPage + 1}`).then(response=>{
       if(response.status === 200){
         let updatedPostDetail = {...postDetail}
         updatedPostDetail.comments = response.data.comments
@@ -156,21 +179,23 @@ let lastLikeReaction = ""
               </div>
               <div className="flex items-center text-gray-light-6">
                 <i className="text-xs fa fa-globe-americas mr-1" />
-                <div className="text-xs font-400 ">Published:  Created on {new Date(post.created_at).toDateString()}</div>
+                <div className="text-xs font-400 ">Published:  Created on {new Date(post.createdAt).toDateString()}</div>
               </div>
             </div>
           </div>
         </div>
         
         {post.title && <h4 className="font-medium mt-1 mb-2" onClick={()=>onFetchPostDetail(post._id)}>{post.title}</h4>}
+
         <p className="post-content mb-0 mt-1 text-sm">
           {postDetail && postDetail._id === post._id ? postDetail.description : post.description.slice(0, 150)}
         </p>
         <a onClick={()=>onFetchPostDetail(post._id)} className="btn btn-a">{ postDetail && postDetail._id ? "Less" : "Read more"}</a>
   
-        <PostReaction post={post} authId={authId} toggleLikeHandler={toggleLikeHandler} />
+        <PostReaction post={post} authId={authId} toggleReactionHandler={toggleReactionHandler} />
         
         <h3 onClick={()=>setShowAddCommentForm(!showAddCommentForm)} className="text-sm mt-4 mb-1 font-medium cursor-pointer">Write a Comment...</h3>
+
         {showAddCommentForm && <AddComment onSubmit={addCommentHandler} />}
         
         

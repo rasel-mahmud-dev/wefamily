@@ -8,7 +8,6 @@ import { Provider } from  "react-redux"
 import {BrowserRouter, HashRouter} from "react-router-dom";
 
 import './index.css'
-import "./asserts/fontawesome-pro-5.12.0-web/css/all.css"
 
 
 createRoot(

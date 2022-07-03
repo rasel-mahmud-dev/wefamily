@@ -5,12 +5,14 @@ import Input from "UI/input/Input";
 import {email, max, min, required, text, tuple, validate} from "src/utils/validator";
 import Button from "UI/button/Button";
 import Radio from "UI/input/Radio";
-import errorMessage from "src/utils/errorResponse";
 import errorResponse from "src/utils/errorResponse";
+import Spin from "UI/spin/Spin";
 
 const Registration = (props) => {
   
   const [errorMessage, setErrorMessage] = React.useState("")
+  
+  const [isPending, setPending] = React.useState(false)
   
   const [step, setStep] = React.useState(1)
   
@@ -86,6 +88,7 @@ const Registration = (props) => {
   function handleSubmit(e){
 
     e.preventDefault && e.preventDefault()
+    isPending && setPending(false)
     if(errorMessage) {
       setErrorMessage("")
     }
@@ -130,6 +133,7 @@ const Registration = (props) => {
         setErrorMessage("password not matched")
         return;
       }
+      setPending(true)
       api.post("/api/registration", {
         first_name: userData.firstName.value,
         last_name: userData.lastName.value,
@@ -139,6 +143,7 @@ const Registration = (props) => {
         password: userData.password.value
       }).then(data=>{
         if(data.status === 201){
+          setPending(false)
           // setStep(2)
           
           
@@ -147,6 +152,7 @@ const Registration = (props) => {
         }
   
       }).catch(ex=>{
+        setPending(false)
         setErrorMessage(errorResponse(ex))
       })
     } else {
@@ -184,7 +190,8 @@ const Registration = (props) => {
   
          <div>
            <Button type="button" onClick={handleStepBack} className="mr-2 bg-primary rounded-full px-8 py-1">Back</Button>
-           <Button type="submit" className="bg-primary rounded-full px-8 py-1">Registration</Button>
+           <Button type="submit" className={["bg-primary rounded-full px-8 py-1", isPending ? "btn-disable": ""].join(" ")}>
+             Registration</Button>
          </div>
           
         </div>
@@ -269,13 +276,17 @@ const Registration = (props) => {
   
   return (
     <div>
-      <div className="sm:px-0 px-4">
+      <div className="px-4">
   
         <div className="box rounded-lg max-w-4xl mx-auto">
-          <div className="px-6 py-4  max-w-lg mx-auto rounded-xl">
+          <div className="px-6 py-4  max-w-xl mx-auto rounded-xl">
           <h1 className="text-2xl font-medium  text-center">Create a new account.</h1>
           <form onSubmit={handleSubmit} className="py-5">
   
+  
+            {isPending && <div className="flex justify-center">
+							<Spin size="small" />
+						</div> }
             <p className="input--error_message open__error_message text-center bg-red-400/20"> {errorMessage && errorMessage}</p>
             
             

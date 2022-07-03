@@ -13,13 +13,15 @@
     "sourceRoot": ".",
     "inlineSourceMap": true,
     //    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": [
     "src/**/*"
   ],
   "ts-node-dev": {
     "compilerOptions": {
+      "typeRoots": ["./node_modules/@types", "./src/types"],
       "module": "CommonJS"
     }
   }

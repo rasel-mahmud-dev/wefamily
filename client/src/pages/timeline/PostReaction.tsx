@@ -1,34 +1,48 @@
 import React from "react";
 import fullLink from "src/utils/fullLink";
+import {ReactionType} from "store/types";
+import {type} from "os";
 
 export let reactions = [
-  {type: "LIKE", icon: "static/icon/facebook-reaction-like.svg"},
-  {type: "LOVE", icon: "static/icon/facebook-reaction-love.svg"},
-  {type: "HAHA", icon: "static/icon/facebook-reaction-haha.svg"},
-  {type: "WOW", icon: "static/icon/facebook-reaction-wow.svg"},
-  {type: "SAD", icon: "static/icon/facebook-reaction-sad.svg"},
-  {type: "ANGRY", icon: "static/icon/facebook-angry.svg"},
+  {type: ReactionType.LIKE, icon: "static/icon/facebook-reaction-like.svg"},
+  {type: ReactionType.LOVE, icon: "static/icon/facebook-reaction-love.svg"},
+  {type: ReactionType.HAHA, icon: "static/icon/facebook-reaction-haha.svg"},
+  {type: ReactionType.WOW, icon: "static/icon/facebook-reaction-wow.svg"},
+  {type: ReactionType.SAD, icon: "static/icon/facebook-reaction-sad.svg"},
+  {type: ReactionType.ANGRY, icon: "static/icon/facebook-angry.svg"},
 ]
 
 let id;
+let isDoneAddReaction = false
 
+interface PropsType {
+  post: any,
+  authId: string,
+  toggleReactionHandler: (post_id: string, reaction: ReactionType)=> void
+}
 
-
-function PostReaction(props){
+function PostReaction(props: PropsType){
   
-  const {post, authId, toggleLikeHandler } = props
-  
+  const {post, authId, toggleReactionHandler } = props
+
   const [isShowReaction, setShowReaction] = React.useState(false)
-  
+
   function renderReaction() {
+
+    function handleToggle(reactionType: ReactionType){
+      toggleReactionHandler(post._id, reactionType)
+      setShowReaction(false)
+      isDoneAddReaction = true
+
+    }
     return (
-      <div>
+      <div onMouseLeave={()=>setShowReaction(false)} className="shadow-a rounded">
         <ul className="flex bg-gray-9  px-2 py-2 rounded">
           { reactions.map((re, i)=>(
-            <li className="mr-1 cursor-pointer" key={i}>
+            <li className="mr-1 transition ease-in-out delay-150  cursor-pointer w-6 hover:w-10 flex items-center" key={i}>
               <img
-                className="w-6 flex px-1"
-                onClick={(e)=>toggleLikeHandler(post._id, re.type)}
+                className="w-full flex px-1"
+                onClick={()=>handleToggle(re.type)}
                 src={fullLink(re.icon)} alt="reaction-logo"/>
             </li>
           ))}
@@ -38,9 +52,9 @@ function PostReaction(props){
   }
   
   function handleEnter(e) {
-    id = setInterval(()=>{
+    id = setInterval(() => {
       setShowReaction(true)
-    }, 500)
+    }, 0)
   }
   
   function handleMouseLeave(e) {
@@ -55,6 +69,13 @@ function PostReaction(props){
       uniqReaction.push(l)
     }
   })
+
+  let uniqAvatar = new Set()
+  post.likes.forEach(l=>{
+    if(l.user) {
+      uniqAvatar.add(l.user[0].avatar)
+    }
+  })
   
   // console.log(uniqReaction)
   
@@ -63,38 +84,51 @@ function PostReaction(props){
       <div className="flex">
         <ul className="flex relative reaction_emoji">
           { uniqReaction.map((like, i)=>(
-            <li className="w-5" key={i}>
+            <li className="w-[18px]" key={i}>
               <img className="w-full" src={fullLink(reactions.find(r=>r.type === like.reaction).icon) } alt=""/>
             </li>
           ))}
-          <li className="number_count">+{post.likes.length}</li>
         </ul>
       </div>
     )
   }
-  
+
+  function renderUniqAvatar(){
+    let j = []
+    uniqAvatar.forEach(item=>{
+      j.push(<div className="w-6">
+        <img className="w-full rounded-full" src={fullLink(item)} />
+      </div>)
+    })
+    return  j
+  }
+
   return (
     <div className="mt-4">
       <ul className="text-sm justify-between items-start" >
         
         <div className="mx-1 flex items-center justify-between">
-          <li className="flex py-1">
-            { uniqReaction.length > 0 ?
+          <li  onClick={handleEnter} className="flex py-1">
+            { isShowReaction ? renderReaction() :
+             uniqReaction.length > 0 ?
               (
-                <div className="flex">
+                <div  className="flex">
                   {renderUniqReaction()}
-                  <div className="flex">
+                  <div className={["flex ml"+uniqReaction.length].join(" ")}>
                     <span className="text-sm font-medium">{uniqReaction.find(ur=>ur.user && ur.user[0]._id === authId) ? "You " : " "}</span>
                     { uniqReaction.slice(uniqReaction.length - 3).map(ur=>(
                       <span className="text-sm font-medium">  {ur.user && ur.user[0]._id !== authId && ` And ${ur.user[0].username} `}  </span>
                     )) }
+                    <li className="number_count">+{post.likes.length}</li>
+
+                    {renderUniqAvatar()}
                   </div>
                 </div>
               ) : (
                 <>
                   <img
                     className="w-5 cursor-pointer hover:text-pink-700"
-                    onClick={(e)=>toggleLikeHandler(post._id, "LIKE")}
+                    onClick={(e)=>toggleReactionHandler(post._id, ReactionType.LIKE)}
                     src={fullLink("static/icon/facebook-reaction-like.svg")}
                     alt=""
                   />
@@ -109,25 +143,18 @@ function PostReaction(props){
             <span className="font-normal ml-2" >{post.total_comments > 0 ? post.total_comments : ''}</span>
           </li>
         </div>
-        
-        
-        <div
-          
-          className="flex items-center justify-around border-b border-t border-gray-9 border-opacity-75 py-1 ">
+
+        <div className="flex items-center justify-around border-b border-t border-gray-9 border-opacity-75 py-1 ">
           <li
-            onMouseLeave={handleMouseLeave}
-            onMouseEnter={handleEnter}
+            // onMouseLeave={handleMouseLeave}
+            // onClick={handleEnter}
+            // onMouseEnter={handleEnter}
             >
-            {  isShowReaction ? renderReaction() : (
-              <span>
-                  <i className="fa fa-thumbs-up mr-1" />
-                  <span>Like</span>
-                </span>
-            )}
+
           </li>
           <li>
-            <i className="far fa-comment-alt-dots mr-1" />
-            <span>Comment</span>
+            {/*<i className="far fa-comment-alt-dots mr-1" />*/}
+            {/*<span>Comment</span>*/}
           </li>
         </div>
       

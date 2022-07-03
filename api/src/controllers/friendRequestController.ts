@@ -2,11 +2,11 @@ import User from "../models/User";
 import {ObjectId} from "mongodb";
 import errorConsole from "../logger/errorConsole";
 import FriendRequest from "../models/FriendRequest";
+import {RequestWithAuth} from "../types";
 
 
-export const addFriendRequest = async (req: Request, res: Response)=>{
+export const addFriendRequest = async (req: RequestWithAuth, res: Response)=>{
   let _id = req.user_id
-  
   let { to, from }: any = req.body
   
   try {
@@ -43,7 +43,7 @@ export const addFriendRequest = async (req: Request, res: Response)=>{
 }
 
 
-export const removeFriendRequest = async (req: Request, res: Response)=>{
+export const removeFriendRequest = async (req: RequestWithAuth, res: Response)=>{
   let _id = req.user_id
   
   let {request_id} = req.params
@@ -66,7 +66,7 @@ export const sendFriendRequest = async (req: Request, res: Response)=> {
   // /api/user/send-friend-request"
 }
 
-export const getComingRequestedFriends = async (req: Request, res: Response)=>{
+export const getComingRequestedFriends = async (req: RequestWithAuth, res: Response)=>{
   let _id = req.user_id
   
   try {
@@ -82,6 +82,7 @@ export const getComingRequestedFriends = async (req: Request, res: Response)=>{
       { $unwind: { path: "$from", preserveNullAndEmptyArrays: true } },
     ])
  
+    // @ts-ignore
     res.send(a)
   
   } catch (ex){

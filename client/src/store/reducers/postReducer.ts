@@ -23,6 +23,7 @@ export default function (state=initialState, action){
     
      case "ADD_LIKE":
        post_id = action.payload.post_id
+       console.log(updatedState.posts)
        index = updatedState.posts.findIndex(p=>p._id === post_id)
        if(index !== -1){
         updatedState.posts[index].likes.push({

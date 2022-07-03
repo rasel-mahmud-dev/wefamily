@@ -5,7 +5,12 @@ const initialState = {
   friends: [],
   allPeoples: [],   // that are add friend able...
   primateMessage: {},  // {[roomKey]: []}
-  socket: null
+  socket: null,
+  backdrop: {
+    message: "",
+    isOpen: false,
+    where: "content"
+  }
 }
 
 
@@ -113,8 +118,14 @@ export default function (state=initialState, action: any){
       updatedState.friends = updatedStateFriends
       return updatedState
   
-    
-
+    case ActionTypes.TOGGLE_BACKDROP:
+      if(action.payload){
+        updatedState.backdrop = action.payload
+      } else {
+        updatedState.backdrop.isOpen = !updatedState.backdrop.isOpen
+      }
+      // state.backdrop.where = "app"
+      return updatedState
   
     default:
       return state

@@ -10,12 +10,14 @@ import dbConnect from "../database";
 import { Request, Response }  from "express"
 import saveLog from "../logger/saveLog";
 import sendMail from "../utilities/sendMail";
+import {createHash} from "../hash";
+import {RequestWithAuth} from "../types/index";
 
 /**
   query params need pass => for [ "add_friend_able" ]
  */
 
-export const getPeoples = async (req: Request, res: Response)=>{
+export const getPeoples = async (req: RequestWithAuth, res: Response)=>{
   
   let _id = req.user_id
   let { type } = req.query
@@ -239,7 +241,8 @@ export const loginUser = async (req: Request, res: Response)=>{
       if(!match)  return res.json({message: "Password not match"})
 
       let token: any = await createToken(user._id,  user.email)
-      let {password : s, ...other} = user
+      
+      let {password : s, ...other} = user._doc
       res.json({token: token, ...other})
     } else {
       saveLog("user not register yet", req.url, req.method)
@@ -297,7 +300,7 @@ export const fetchProfile = async (req: Request, res: Response)=>{
 }
 
 
-export const addFriend = async (req: Request, res: Response)=>{
+export const addFriend = async (req: RequestWithAuth, res: Response)=>{
   let {  friend_id } = req.body
   let _id = req.user_id
   let client;
@@ -349,7 +352,7 @@ export const addFriend = async (req: Request, res: Response)=>{
 
 
 
-export const unFriend = async (req: Request, res: Response)=>{
+export const unFriend = async (req: RequestWithAuth, res: Response)=>{
   let { friend_id } = req.params
   let _id = req.user_id
   
@@ -385,7 +388,7 @@ export const unFriend = async (req: Request, res: Response)=>{
 
 
 
-export const getFriend = async (req: Request, res: Response)=>{
+export const getFriend = async (req: RequestWithAuth, res: Response)=>{
   
   let _id = req.user_id
   let client;
@@ -395,6 +398,7 @@ export const getFriend = async (req: Request, res: Response)=>{
   try{
     
     let u = await User.aggregate([
+    // @ts-ignore
       {$match: { _id: new ObjectId(friend_id)} },
       {
         $lookup: {
@@ -426,7 +430,7 @@ export const getFriend = async (req: Request, res: Response)=>{
 }
 
 
-export const getAllFriends = async (req: Request, res: Response)=>{
+export const getAllFriends = async (req: RequestWithAuth, res: Response)=>{
   
   let _id = req.user_id
   let client;
@@ -450,7 +454,7 @@ export const getAllFriends = async (req: Request, res: Response)=>{
 }
 
 
-export const getFriends = async (req: Request, res: Response)=>{
+export const getFriends = async (req: RequestWithAuth, res: Response)=>{
   
   let _id = req.user_id
   let client;
@@ -502,7 +506,7 @@ export const getFriends = async (req: Request, res: Response)=>{
   }
 }
 
-export const getTimelinePost = async (req: Request, res: Response)=>{
+export const getTimelinePost = async (req: RequestWithAuth, res: Response)=>{
   
   let _id = req.user_id
   let client;

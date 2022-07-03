@@ -12,6 +12,7 @@ import {RootStateType} from "src/store";
 import MyRoutes from "src/MyRoutes";
 import Footer from "components/footer/Footer";
 import {ActionTypes} from "store/types/ActionTypes";
+import Backdrop from "UI/backdrop/Backdrop";
 
 
 function App(props) {
@@ -26,7 +27,7 @@ function App(props) {
     let loader = document.querySelector(".loader")
     loader && loader.parentElement && loader.parentElement.removeChild(loader)
   
-    // dispatch(fetchCurrentAuth())
+    dispatch(fetchCurrentAuth())
     
   }, [])
   
@@ -168,13 +169,33 @@ function App(props) {
     })
   }
   
+  function handleCloseBackdrop(){
+    dispatch({
+      type: ActionTypes.TOGGLE_BACKDROP,
+      payload: false
+    })
+  }
+  
   
   return (
-    <div className="">
+    <div className="relative">
       <div className="top-96"/>
+     
       <Navigation authState={authState} />
+      
+      <div id="appContent">
+        
+        {/*<Backdrop*/}
+        {/*  onCloseBackdrop={handleCloseBackdrop}*/}
+        {/*  isOpenBackdrop={props.filteredProducts.isLoading}*/}
+        {/*  bg="#00000060"*/}
+        {/*/>*/}
+        
+      {/*{appState.backdrop.where === "content" && appState.backdrop.isOpen && <div onClick={handleCloseBackdrop} className="backdrop"></div> }*/}
+        
         <MyRoutes authState={authState}  />
       {/*<Footer />*/}
+    </div>
     </div>
   )
 }

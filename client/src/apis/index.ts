@@ -6,10 +6,11 @@ import axios from "axios"
 export let backend = "";
 
 if(import.meta.env.DEV){
-  // backend = "http://192.168.163.224:1001"
+  // backend = "http://192.168.122.224:1001"
+  // backend = "https://rsl-socket-app.herokuapp.com"
   backend = "http://localhost:1001"
 } else{
-  backend = "https://rsl-socket-app.herokuapp.com"
+  backend = "https://wefamily-server.herokuapp.com"
 }
 
 
@@ -21,5 +22,16 @@ const apis = axios.create({
     authorization: token,
   }
 })
+
+
+export function api() {
+  return axios.create({
+    baseURL: backend,
+    headers: {
+      authorization: token,
+    }
+  })
+}
+
 
 export default apis

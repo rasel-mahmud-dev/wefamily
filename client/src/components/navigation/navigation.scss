@@ -2,8 +2,10 @@
 .badge{
   @apply bg-green-400
     text-white
-    absolute
-    -top-2 px-1 lg:px-2 text-xs ;
+    absolute;
+  padding: 2px 6px;
+  top: 2px;
+  left: 31px
 }
 
 .navigation{

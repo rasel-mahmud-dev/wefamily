@@ -5,10 +5,12 @@ import Input from "UI/input/Input";
 import Button from "UI/button/Button";
 
 import {email, max, min, required, text, validate} from "src/utils/validator";
-import SweetAlert from "UI/sweetAlert/SweetAlert";
+
 import apis from "src/apis";
 import {ActionTypes} from "store/types/ActionTypes";
 import {LoginAction} from "store/types/AuthReducerType";
+import errorResponse from "src/utils/errorResponse";
+import Spin from "UI/spin/Spin";
 
 
 type Props = {
@@ -22,6 +24,11 @@ const Login:FC<Props> = (props) => {
   //   email: Joi.string().min(3).max(30).required(),
   //   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
   // })
+
+  const a = "ASD"
+  console.log(a)
+
+  const [isPending, setPending] = React.useState(false)
   
   const {afterRedirect} = props
   
@@ -71,11 +78,7 @@ const Login:FC<Props> = (props) => {
     e.preventDefault()
     
     errorMessage && setErrorMessage("")
-    
-    let complete = true;
-    for (const userDataKey in userData) {
-      complete = !!(userData[userDataKey].touch && userData[userDataKey].value);
-    }
+    isPending && setPending(false)
     
     
     let errors = validate("", {
@@ -97,12 +100,13 @@ const Login:FC<Props> = (props) => {
       }
      return  setUserData(result)
     }
-    
+    setPending(true)
     apis.post("/api/login", {
       email: userData.email.value,
       password: userData.password.value,
     }).then(response=>{
       if(response.status === 200) {
+        setPending(false)
         dispatch<LoginAction>({
           type: ActionTypes.LOGIN,
           payload: {
@@ -112,14 +116,15 @@ const Login:FC<Props> = (props) => {
         })
         navigate(afterRedirect ? afterRedirect : "/")
       }
+    }).catch(ex=>{
+      setPending(false)
+      setErrorMessage(errorResponse(ex))
     })
-    
-    
   }
   
   
   return (
-    <div className="sm:px-0 px-4">
+    <div className="px-4">
       <div className="box rounded-lg max-w-4xl mx-auto">
         
         {/*<SweetAlert onClose={()=>setErrorMessage("")} message={errorMessage}/>*/}
@@ -127,13 +132,15 @@ const Login:FC<Props> = (props) => {
         
         <div className="px-6 py-4  max-w-lg mx-auto rounded-xl">
           <h1 className="text-2xl font-medium  text-gray-light-7 text-center">Login in your Account.</h1>
-          
- 
-          
-          
           <form onSubmit={handleSubmit} className="py-6">
   
+            {isPending && <div className="flex justify-center">
+              <Spin size="small" />
+            </div> }
+  
+  
             <p className="input--error_message open__error_message text-center bg-red-400/20"> {errorMessage && errorMessage}</p>
+            
             
             <Input
               onChange={handleChange}
@@ -160,9 +167,10 @@ const Login:FC<Props> = (props) => {
             </div>
             <div>
            
-            <Button type="submit" className="bg-primary rounded-full px-8 py-1">Login</Button>
-              
+            <Button type="submit" className={["bg-primary rounded-full px-8 py-1", isPending ? "btn-disable": ""].join(" ")}>Login</Button>
+            
             </div>
+            
           </form>
         </div>
       </div>

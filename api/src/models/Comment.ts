@@ -1,25 +1,21 @@
-import Base from"./Base";
 
-class Comment extends Base{
-  
-  static collectionName = "comments"
-  
+import mongoose from "mongoose";
+
+export interface CommentType {
   _id?: string
   post_id: string
   user_id: string
   text: string
-  created_at: Date
+  createdAt?: Date
   parent_id: string | null
-  
-  constructor({_id="", text, user_id, post_id, parent_id }) {
-    super(Comment.collectionName)
-    this._id = ""
-    this.text = text
-    this.user_id = user_id
-    this.post_id = post_id
-    this.created_at = new Date()
-    this.parent_id = parent_id
-  }
 }
 
-export default Comment
+const schema: { [key in keyof CommentType  ]: any } = {
+  text: String,
+  parent_id: { type: mongoose.Schema.Types.ObjectId, ref: "Comment",  index: true },
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  post_id: { type: mongoose.Schema.Types.ObjectId, ref: "Post", index: true }
+}
+
+
+export default mongoose.model("Comment", new mongoose.Schema(schema, { timestamps: true }))

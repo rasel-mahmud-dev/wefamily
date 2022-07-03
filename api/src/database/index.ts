@@ -216,21 +216,23 @@ import saveLog from "../logger/saveLog";
 
 
 function dbConnect(collectionName?: string){
-  
+  let URI = process.env.MONGODB_CONNECTION
   let client;
-  let DATABASE_NAME = "dating-web"
-  if(process.env.NODE_ENV === "development") {
-    client = new MongoClient("mongodb://127.0.0.1:27017", {
+  
+  if(process.env.NODE_ENV !== "development") {
+    URI = "mongodb://127.0.0.1:27017/dating-web"
+    
+    client = new MongoClient(URI, {
       // maxPoolSize: 1,
       // @ts-ignore
       useNewUrlParser: true, useUnifiedTopology: true,
     });
   } else{
-    DATABASE_NAME = process.env.DATABASE_NAME;
+  
+    URI = process.env.MONGODB_CONNECTION
+    
     // `mongodb+srv://rasel:${process.env.MONGODB_PASS}.$@cluster0.zhdz6.mongodb.net?retryWrites=true&w=majority`,
-    client = new MongoClient(
-      `mongodb+srv://rasel:${process.env.MONGODB_PASS}@cluster0.4ywhd.mongodb.net/retryWrites=true&w=majority`,
-      {
+    client = new MongoClient(URI, {
       // @ts-ignore
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -241,7 +243,7 @@ function dbConnect(collectionName?: string){
     try {
       // Connect the client to the server
       await client.connect();
-      let db =  client.db(DATABASE_NAME)
+      let db =  client.db("datebook")
       if(collectionName){
         let c = await db.collection(collectionName)
         resolve({c: c, client, db: db})

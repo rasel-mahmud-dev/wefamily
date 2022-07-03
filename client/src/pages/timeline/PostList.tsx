@@ -10,11 +10,12 @@ import apis from "src/apis";
 import "./posts.scss"
 import Post from "pages/timeline/Post";
 import {RootStateType} from "src/store";
+import AddPost from "pages/timeline/AddPost";
 
 
 let id;
 const PostList = (props) => {
-  const { postState, authState } = props
+  const { postState, authState, appState } = props
   const [postDetail, setPostDetail] = React.useState<any>({})
   const [commentPagination, setCommentPagination] = React.useState({
     pageSize: 1,
@@ -322,55 +323,21 @@ const PostList = (props) => {
       <div key={i} className="post  shadow-xss bg-white mb-4 px-4 py-2 rounded">
         <Post
           key={post._id}
-          post={post}
+          {...post}
           authId={authState._id}
           // postDetail={postDetail}
           // onFetchPostDetail={fetchPostDetailHandler}
-          renderComments={renderComments} />
+          renderComments={renderComments}
+        />
       </div>
     ))
-  }
-  
-  function addStatusRenderForm(){
-    let [postText, setPostText] = React.useState("")
-    
-    function publishPostHandler(){
-      apis.post("/api/post", {description: postText,}).then(r => {
-        console.log(r)
-      })
-      
-    }
-    
-    return (
-      <div className="mt-2 mb-5 bg-white rounded py-3  px-4">
-        <h4 className="text-md font-medium mb-1">What is in your mind</h4>
-        <div className="add-comment-form">
-          <textarea
-            onChange={(e)=>setPostText(e.target.value)}
-            className="input-item"
-            name="text"
-            rows={4}
-            placeholder="Share some what you are thinking?"
-            id="text"
-            defaultValue={postText}
-          />
-          <div className="flex mb-1">
-            <li className="list-none text-gray-700  px-1 pl-0"><i className="fa fa-image" /></li>
-            <li className="list-none text-gray-700 px-1"><i className="fa fa-smile" /></li>
-          </div>
-          <div className="flex">
-            <button onClick={publishPostHandler}  className="btn btn-sm w-full">Post</button>
-          </div>
-        </div>
-      </div>
-    )
   }
   
   
   return (
     <div>
-      <div className="max-w-full mx-auto">
-        { addStatusRenderForm() }
+      <div className="max-w-3xl mx-auto">
+        <AddPost  dispatch={dispatch} appState={appState}/>
         {renderPosts()}
       </div>
     </div>
@@ -381,7 +348,8 @@ const PostList = (props) => {
 function mapStateToProps(state: RootStateType){
   return {
     postState: state.postState,
-    authState: state.authState
+    authState: state.authState,
+    appState: state.appState
   }
 }
 

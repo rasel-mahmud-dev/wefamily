@@ -41,6 +41,9 @@ module.exports = {
           900: "#f8f8f8",
         }
       },
+      boxShadow: {
+        a: "1px 7px 27px -1px #595959"
+      }
     },
   },
   plugins: [],

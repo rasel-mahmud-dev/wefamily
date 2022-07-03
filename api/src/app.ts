@@ -16,6 +16,7 @@ dotenv.config();
 
 import dbConnect from "./database";
 import saveLog from "./logger/saveLog";
+import mongoose from "mongoose";
 
 
 // let c = ['debug', 'log', 'warn', 'error']
@@ -69,18 +70,20 @@ routes(app)
 
 
 app.use((req, res, err)=>{
+  // @ts-ignore
   res.status(500).json({message: err.message ? err.message : "Internal error"})
 })
 
 
-
-dbConnect().then(async (r)=>{
-  console.log("database connected...")
-  await r.client.close()
-}).catch(ex=>{
-  console.log("database connection fail")
-  saveLog(ex.message)
-})
+mongoose.connect(process.env.NODE_ENV === "development"
+  ? "mongodb://127.0.0.1:27017/dating-web"
+  : process.env.MONGODB_CONNECTION
+).then(r=>{
+    console.log("mongoose connected..")
+  })
+  .catch(ex=>{
+    console.log(ex)
+  })
 
 
 const PORT = process.env.PORT || 1001

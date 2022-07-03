@@ -6,7 +6,10 @@ import {toggleLike} from "../controllers/likeController";
 
 export default function routes(app){
   app.get("/api/posts/:post_id", isAuth, controllers.postController.getPost)
-  app.get("/api/posts", isAuth, controllers.postController.getAllPost)
+  
+  app.get("/api/posts",  controllers.postController.getAllPost)
+  app.get("/api/posts2",  controllers.postController.getAllPost2)
+  
   app.post("/api/post", isAuth, controllers.postController.savePost)
 
   app.post("/api/toggle-like", isAuth, controllers.likeController.toggleLike)

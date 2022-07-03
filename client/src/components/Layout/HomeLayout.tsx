@@ -13,7 +13,7 @@ import {AuthReducerType} from "store/types/AuthReducerType";
 const HomeLayout = () => {
   
   return (
-   <div className="container-1300">
+   <div className="container-130000">
 
      <div className="flex">
   
@@ -26,7 +26,7 @@ const HomeLayout = () => {
       
          </div>
        </div>
-       <div className="main-content lg:mx-10">
+       <div className="main-content xxl:mx-10 lg:mx-4 mx-2">
          <div className="">
            <PostList />
          </div>
