@@ -11,6 +11,7 @@ import fileUpload from "../utilities/fileUpload";
 import { copyFile, rm } from "fs/promises"
 import path from "path";
 import * as os from "os";
+import slugify from "../utilities/slugify";
 
 
 export const getAllPost = async (req: Request, res: Response)=>{
@@ -144,25 +145,23 @@ export const savePost = async (req: RequestWithAuth, res: Response)=>{
   if(!req.user_id) return response(res, 409, "Not permit")
   
   try {
-    
-    
     let data = await fileUpload(req)
     const { description, title, is_public } = data.fields as any
-  
-    async function result(uploadedPhotos){
+    
+    async function result(uploadedPhotos, video){
       let newPost: any = new Post({
         title: title || "",
         description: description || "",
         author_id: new ObjectId(req.user_id),
         images: uploadedPhotos.length > 0 ? uploadedPhotos : [],
         isPublic: !!is_public,
-        video: ""
+        video: video ? video : ""
       })
       newPost = await newPost.save()
-      res.json(newPost)
+      res.status(201).json(newPost)
     }
     
-    
+
     let imageDir = path.resolve("static/images")
     if(data.files.photos){
       let photos = data.files.photos
@@ -170,25 +169,27 @@ export const savePost = async (req: RequestWithAuth, res: Response)=>{
         let p = []
         await photos.forEach((file, i)=> {
           (async function () {
-            let newName = imageDir + "/"+ photos.originalFilename
+            let newName = imageDir + "/" + photos.originalFilename
             await copyFile(file.filepath, newName)
-            p.push("static/images/" + photos.originalFilename )
+            p.push("static/images/" + photos.originalFilename)
             if(i+1 === photos.length){
-              result(p)
+              await result(p)
             }
           }())
-          
+
         })
       } else {
-        await copyFile(photos.filepath, imageDir + "/"+ photos.originalFilename)
-        result(["static/images/" + photos.originalFilename])
+        await copyFile(photos.filepath, imageDir + "/" + photos.originalFilename)
+        await result(["static/images/" + photos.originalFilename])
       }
-    } else {
-    
+    } else if(data.files.video) {
+      let video = data.files.video
+      await copyFile(video.filepath, imageDir + "/"+ slugify(video.originalFilename) + ".mp4")
+      await result([], "static/images/" + slugify(video.originalFilename) + ".mp4")
     }
     
   } catch (ex){
-    console.log(ex)
+      res.status(500).json({message: ex.message})
   }
   
   

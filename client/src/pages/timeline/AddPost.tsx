@@ -2,13 +2,13 @@ import React from 'react';
 import {ActionTypes} from "store/types/ActionTypes";
 import Backdrop from "UI/backdrop/Backdrop";
 import Modal from "UI/modal/Modal";
-import {faImage, faPlus, faSmile, faTimes} from "@fortawesome/pro-regular-svg-icons";
+import {faImage, faPlus, faSmile, faTimes, faVideoPlus} from "@fortawesome/pro-regular-svg-icons";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import blobToBase64 from "src/utils/blobToBase64";
 import Input from "UI/input/Input";
 import {max, min, required, validate} from "src/utils/validator";
-import apis from "src/apis";
+import apis, {api} from "src/apis";
 import errorResponse from "src/utils/errorResponse";
 import Radio from "UI/input/Radio";
 
@@ -16,8 +16,11 @@ const AddPost = ({dispatch, appState}) => {
   
   let [postText, setPostText] = React.useState({value: "", errorMessage: "", touch: false})
   let [isPublic, setPublic] = React.useState(true)
+
   const [images, setImages] = React.useState({})
-  
+
+  const [video, setVideo] = React.useState(null)
+
   const [errorMessage, setErrorMessage] = React.useState({})
   const [isPending, setPending] = React.useState(false)
   
@@ -26,7 +29,7 @@ const AddPost = ({dispatch, appState}) => {
   
   const schema = {
     postText: {
-      max: max(30),
+      max: max(10000),
       min: min(3),
       required: required(),
     }
@@ -62,17 +65,36 @@ const AddPost = ({dispatch, appState}) => {
     let im = {
       ...images
     }
-   
+
+
     for (let i = 0; i < files.length; i++) {
-      blobToBase64(files[i], (blob)=>{
-        im[files[i].name] = {
-          base64: blob,
-          blob: files[i]
+      // images
+      if(files[i] && files[i].type.indexOf("image/") !== -1){
+        if(files[i].size > 1000000){ // 1000kb
+          alert("please choose image less that 1000kb")
+        } else {
+          blobToBase64(files[i], (blob)=>{
+            im[files[i].name] = {
+              base64: blob,
+              blob: files[i]
+            }
+            if((i+1) === files.length){
+              setImages(im)
+            }
+          })
         }
-        if((i+1) === files.length){
-          setImages(im)
+
+        // video
+      } else {
+        if(files[i].size > 20718784) { // 20MB
+          alert("Video file should be < 20MB")
+          return
         }
-      })
+
+        setVideo(files[i])
+
+      }
+
     }
   }
   
@@ -104,20 +126,38 @@ const AddPost = ({dispatch, appState}) => {
       return setPostText(result)
     }
     setPending(true)
-    
-    apis.post("/api/post", {
-      description: postText.value,
-      is_public: isPublic,
-    }).then(r => {
-      console.log(r)
-    }).then(res=>{
-      console.log(res)
-    }).catch(ex=>{
-      setErrorMessage(errorResponse(ex))
-      setPending(false)
-    })
+
+    let data =  new FormData();
+    data.append("description", postText.value)
+    data.append("is_public", isPublic.toString())
+
+    data.append("video", video, video.name)
+
+    for (let imagesKey in images) {
+      data.append("photos", images[imagesKey].blob, images[imagesKey].blob.name)
+    }
+
+
+    api().post("/api/post", data)
+      .then(response=>{
+        if(response.status === 201) {
+
+          alert("post added")
+          dispatch({
+            type: ActionTypes.TOGGLE_BACKDROP,
+            payload: {
+              where: "content",
+              message: "addpost",
+              isOpen: false
+            }
+          })
+          setPending(false)
+        }
+      }).catch(ex=>{
+        setErrorMessage(errorResponse(ex))
+        setPending(false)
+      })
   }
-  
   
   function handleChange({target: {name, value}}) {
     let error = validate(name, value, schema)
@@ -180,10 +220,18 @@ const AddPost = ({dispatch, appState}) => {
 
 
             </div>
-            
+
+            {video && (<li className="text-sm">
+              {video.name}
+            </li>)}
+
+
             <div className="flex mb-1">
               <li className="list-none text-gray-700  px-1 pl-0">
                 <FontAwesomeIcon onClick={chooseImage} icon={faImage} />
+              </li>
+              <li className="list-none text-gray-700  px-1 pl-0">
+                <FontAwesomeIcon onClick={chooseImage} icon={faVideoPlus} />
               </li>
               <li className="list-none text-gray-700 px-1">
                 <FontAwesomeIcon icon={faSmile} />
@@ -214,27 +262,8 @@ const AddPost = ({dispatch, appState}) => {
       {addPostModal()}
       
       
-      <h4 className="text-md font-medium mb-1">What is in your mind</h4>
-      <div className="add-comment-form">
-        <textarea
-          className="input-item w-full"
-          name="text"
-          rows={4}
-          placeholder="Share some what you are thinking?"
-          id="text"
-        />
-        <div className="flex mb-1">
-          <li className="list-none text-gray-700  px-1 pl-0">
-            <FontAwesomeIcon icon={faImage} />
-          </li>
-          <li className="list-none text-gray-700 px-1">
-            <FontAwesomeIcon icon={faSmile} />
-          </li>
-        </div>
-        <div className="flex">
-          <button onClick={publishPostHandler}  className="btn w-full">Post</button>
-        </div>
-      </div>
+      <h4 onClick={publishPostHandler} className="text-md font-medium mb-1">What is in your mind</h4>
+
     </div>
   )
 };

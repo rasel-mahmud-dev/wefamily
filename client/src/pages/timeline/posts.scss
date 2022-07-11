@@ -1,3 +1,4 @@
+@import "src/scss/--mixin";
 .post-content{
   white-space: break-spaces;
 }
@@ -35,7 +36,10 @@
   width: 700px;
   max-height: calc(100vh - 150px);
   overflow: scroll;
-  margin: 5px 0px;
+  margin: 5px 0;
+  @include get_down(768px){
+    width: 92vw;
+  }
 }
 
 .modal{

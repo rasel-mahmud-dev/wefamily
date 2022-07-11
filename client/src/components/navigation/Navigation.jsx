@@ -8,6 +8,8 @@ import slugify from "src/utils/slugify";
 // import PreloadLink from "../preloadLink/PreloadLink";
 
 import logo from  "src/asserts/images/logo.svg"
+import logoFull from  "src/asserts/images/logo.svg"
+
 import {
   faCog,
   faCommentAltDots,
@@ -78,8 +80,8 @@ const Navigation = (props) => {
 
           <div className="max-w-screen-xl w-full mx-auto px-2">
             <ul className="main-nav flex justify-between items-center">
-              <div className="nav-logo mr-8 flex md:flex-5">
-                <NavLink to="/" className="cursor-pointer"> <img src={logo} alt="logo"/></NavLink>
+              <div className="nav-logo mr-0 md:mr-8 flex  sm:flex-5">
+                <NavLink to="/" className="cursor-pointer"> <div className="logo"  /></NavLink>
               </div>
               <div className="nav-center flex md:flex-1 md:justify-center ">
                 <ul className="nav_items w-full flex  md:justify-end items-center">
@@ -115,7 +117,7 @@ const Navigation = (props) => {
                     <Link className="flex items-center" to="/">
 
                         <FontAwesomeIcon className="text-light-850  ml-1.5" icon={faHomeAlt} />
-                        <label  className="text-white ml-2" htmlFor="">Home</label>
+                        <label  className="text-white ml-2 hidden md:block" htmlFor="">Home</label>
 
 
                     </Link>
@@ -127,7 +129,7 @@ const Navigation = (props) => {
                         <FontAwesomeIcon className="text-light-850  ml-1.5" icon={faUsers} />
                         <Badge className="badge" count={100} />
                       </div>
-                      <label className="text-white ml-2" htmlFor="">Friends</label>
+                      <label className="text-white ml-2 hidden md:block" htmlFor="">Friends</label>
                     </Link>
                   </li>
 
@@ -146,7 +148,7 @@ const Navigation = (props) => {
                         <FontAwesomeIcon className="text-light-850  ml-1.5" icon={faCommentAltDots} />
                         <Badge className="badge"  count={2} />
                       </div>
-                      <label  className="text-white ml-2" htmlFor="">Chat</label>
+                      <label  className="text-white ml-2 hidden md:block " htmlFor="">Chat</label>
                     </Link>
                   </li>
 
@@ -159,7 +161,7 @@ const Navigation = (props) => {
                   </li>
                 </ul>
               </div>
-              <div className="nav-auth flex md:flex-5 md:justify-end ">
+              <div className="nav-auth flex  md:flex-5  md:justify-end ">
 
                 <ul className="nav_items flex justify-end items-center ">
                   <div className="nav_item flex relative items-center"
@@ -176,7 +178,7 @@ const Navigation = (props) => {
                 </span>
                     {authDropdown(expandDropdown === "user_menu")}
                   </div>
-                  <li>
+                  <li className="hidden md:block">
                     <FontAwesomeIcon className="text-light-850  ml-1.5" icon={faCog} />
                   </li>
                 </ul>

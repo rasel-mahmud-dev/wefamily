@@ -14,6 +14,8 @@ export type PostType = {
     author_id: string,
     createdAt: Date,
     likes: any[],
+    images?: string[],
+    video?: string,
     total_comments: number,
     total_likes: number,
     description: string,

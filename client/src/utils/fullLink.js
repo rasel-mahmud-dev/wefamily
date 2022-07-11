@@ -1,5 +1,9 @@
 import {backend} from "../apis";
 
 export default function (link){
-  return  backend + "/" + link
+  if(link && link.startsWith("static")){
+    return backend + "/" + link
+  } else {
+    return link
+  }
 }

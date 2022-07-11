@@ -1,17 +1,12 @@
 import {connect, useDispatch} from "react-redux";
 import  React, {useEffect} from "react";
 import api from "src/apis";
-import fullLink from "../../utils/fullLink";
 import Comments from "src/components/comments/Comments";
-import AddComment from "src/components/comments/AddComment";
-import {Link} from "react-router-dom";
-import apis from "src/apis";
 
 import "./posts.scss"
 import Post from "pages/timeline/Post";
 import {RootStateType} from "src/store";
 import AddPost from "pages/timeline/AddPost";
-
 
 let id;
 const PostList = (props) => {
@@ -323,7 +318,7 @@ const PostList = (props) => {
       <div key={i} className="post  shadow-xss bg-white mb-4 px-4 py-2 rounded">
         <Post
           key={post._id}
-          {...post}
+          post={post}
           authId={authState._id}
           // postDetail={postDetail}
           // onFetchPostDetail={fetchPostDetailHandler}
@@ -337,7 +332,7 @@ const PostList = (props) => {
   return (
     <div>
       <div className="max-w-3xl mx-auto">
-        <AddPost  dispatch={dispatch} appState={appState}/>
+        <AddPost dispatch={dispatch} appState={appState}/>
         {renderPosts()}
       </div>
     </div>

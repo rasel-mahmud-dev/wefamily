@@ -4,6 +4,7 @@ api/.idea
 api/.gita
 api/node_modules
 api/dist
+api/src/static
 api/.env
 
 

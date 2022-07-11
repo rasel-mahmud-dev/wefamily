@@ -1,3 +1,4 @@
+@import "src/scss/--mixin";
 
 .badge{
   @apply bg-green-400
@@ -53,3 +54,42 @@
 
 }
 .h-48{height: 48px}
+
+.logo{
+  background-image: url("../../asserts/images/logo-full.svg");
+  width: 158px;
+  height: 34px;
+  background-repeat: no-repeat;
+  @include get_down(800px){
+    background-image: url("../../asserts/images/logo.svg");
+    width: 50px;
+    height: 34px;
+  }
+}
+.nav-logo{
+  @include get_down(800px){
+    flex: 0!important;
+  }
+}
+.nav-auth{
+  @include get_down(800px){
+    flex: 0!important;
+  }
+}
+.nav_items{
+  @include get_down(800px){
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+  @include get_down(500px){
+    padding: 0 2px;
+    .avatar_logo{
+      margin-right: 0;
+      margin-left: 15px;
+    }
+    .nav_item{
+      padding-left: 0!important;
+      padding-right: 0!important;
+    }
+  }
+}

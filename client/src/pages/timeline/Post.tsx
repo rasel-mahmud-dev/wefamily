@@ -15,7 +15,7 @@ interface PostDetail extends PostType{
 }
 
 
-interface PostPropsType extends PostType{
+interface PostPropsType{
   post: PostDetail,
   authId: string,
   renderComments: (_id: string, comments: any[], total_comments: number)=>any
@@ -113,16 +113,17 @@ function Post (props: PostPropsType) {
   }
   
   function onFetchPostDetail(post_id) {
-    console.log(post_id)
+
     if(postDetail && postDetail._id){
       setPostDetail({})
     } else {
-      api().get(`/api/posts/${post_id}`).then(response => {
-        if (response.status === 200) {
-          setPostDetail(response.data.post)
-          // fetchMoreCommentHandler(response.data.post._id)
-        }
-      })
+      setPostDetail(post)
+      // api().get(`/api/posts/${post_id}`).then(response => {
+      //   if (response.status === 200) {
+      //     setPostDetail(response.data.post)
+      //     // fetchMoreCommentHandler(response.data.post._id)
+      //   }
+      // })
     }
   }
   
@@ -191,7 +192,15 @@ function Post (props: PostPropsType) {
           {postDetail && postDetail._id === post._id ? postDetail.description : post.description.slice(0, 150)}
         </p>
         <a onClick={()=>onFetchPostDetail(post._id)} className="btn btn-a">{ postDetail && postDetail._id ? "Less" : "Read more"}</a>
-  
+
+        { post.images && post.images.map(image=>(
+            <img src={fullLink(image)}  alt=""/>
+        )) }
+
+        { post.video &&
+            <video src={fullLink(post.video)} controls={true} autoPlay={false} />
+         }
+
         <PostReaction post={post} authId={authId} toggleReactionHandler={toggleReactionHandler} />
         
         <h3 onClick={()=>setShowAddCommentForm(!showAddCommentForm)} className="text-sm mt-4 mb-1 font-medium cursor-pointer">Write a Comment...</h3>
