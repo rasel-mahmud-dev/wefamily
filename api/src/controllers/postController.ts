@@ -7,6 +7,10 @@ import Post from "../models/Post";
 import errorConsole from "../logger/errorConsole";
 import {ObjectId} from "mongodb";
 import {RequestWithAuth} from "../types/index";
+import fileUpload from "../utilities/fileUpload";
+import { copyFile, rm } from "fs/promises"
+import path from "path";
+import * as os from "os";
 
 
 export const getAllPost = async (req: Request, res: Response)=>{
@@ -139,15 +143,64 @@ export const savePost = async (req: RequestWithAuth, res: Response)=>{
   
   if(!req.user_id) return response(res, 409, "Not permit")
   
-  let newPost: any = new Post({
-    title: req.body.title || "",
-    description: req.body.description || "",
-    created_at: new Date(),
-    updated_at: new Date(),
-    author_id: new ObjectId(req.user_id)
-  })
-  newPost = await newPost.save()
-  console.log(newPost)
+  try {
+    
+    
+    let data = await fileUpload(req)
+    const { description, title, is_public } = data.fields as any
+  
+    async function result(uploadedPhotos){
+      let newPost: any = new Post({
+        title: title || "",
+        description: description || "",
+        author_id: new ObjectId(req.user_id),
+        images: uploadedPhotos.length > 0 ? uploadedPhotos : [],
+        isPublic: !!is_public,
+        video: ""
+      })
+      newPost = await newPost.save()
+      res.json(newPost)
+    }
+    
+    
+    let imageDir = path.resolve("static/images")
+    if(data.files.photos){
+      let photos = data.files.photos
+      if (Array.isArray(photos)) {
+        let p = []
+        await photos.forEach((file, i)=> {
+          (async function () {
+            let newName = imageDir + "/"+ photos.originalFilename
+            await copyFile(file.filepath, newName)
+            p.push("static/images/" + photos.originalFilename )
+            if(i+1 === photos.length){
+              result(p)
+            }
+          }())
+          
+        })
+      } else {
+        await copyFile(photos.filepath, imageDir + "/"+ photos.originalFilename)
+        result(["static/images/" + photos.originalFilename])
+      }
+    } else {
+    
+    }
+    
+  } catch (ex){
+    console.log(ex)
+  }
+  
+  
+  // let newPost: any = new Post({
+  //   title: req.body.title || "",
+  //   description: req.body.description || "",
+  //   created_at: new Date(),
+  //   updated_at: new Date(),
+  //   author_id: new ObjectId(req.user_id)
+  // })
+  // newPost = await newPost.save()
+  // console.log(newPost)
 }
 
 export const getPost = async (req: Request, res: Response)=>{
